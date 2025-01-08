@@ -23,8 +23,14 @@ const login = (req, res) => {
         if (!isMatch) return ApiResponse.error(res, 'Invalid credentials');
 
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        res.cookie('token',token, { maxAge: 900000});
         ApiResponse.success(res, 'Login successful', { token });
     });
 };
 
-module.exports = { register, login };
+const logout = (req,res) =>{
+    res.clearCookie('token');
+    return res.redirect('/login');
+}
+
+module.exports = { register, login ,logout };

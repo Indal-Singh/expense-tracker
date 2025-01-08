@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Expenses</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Soft Dark Theme */
+        body {
+            background-color: #181818;
+            font-family: 'Arial', sans-serif;
+            color: #e0e0e0;
+        }
+
+        .brutalism {
+            border: 3px solid #ff7043;
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.5), -8px -8px 0 rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            transition: all 0.3s ease-in-out;
+            margin-top: 3rem;
+            background-color: #282828;
+        }
+
+        .brutalism:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 12px 12px 0 rgba(0, 0, 0, 0.5), -12px -12px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .expense-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem;
+            border-bottom: 2px dashed #ff7043;
+            color: #e0e0e0;
+        }
+
+        .expense-item:last-child {
+            border-bottom: none;
+        }
+
+        .btn {
+            background-color: #ff7043;
+            color: #e0e0e0;
+            font-weight: bold;
+            border: 2px solid #ff7043;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-top: 1rem;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #ffab91;
+            border-color: #ffab91;
+        }
+
+        .input-field {
+            border: 2px solid #64b5f6;
+            padding: 0.75rem;
+            background-color: #121212;
+            color: #e0e0e0;
+            width: 100%;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #64b5f6;
+            box-shadow: 0 0 5px #64b5f6;
+        }
+
+        .neubrutalism {
+            border: 3px solid #444;
+            background-color: #333;
+            box-shadow: 5px 5px 0px #444;
+            transition: all 0.2s ease;
+        }
+
+        .neubrutalism:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Modify the background colors of specific sections */
+        .neubrutalism.bg-yellow-300 {
+            background-color: rgb(255 204 0 / 1);
+        }
+
+        .neubrutalism.bg-blue-300 {
+            background-color: rgb(66, 133, 244);
+        }
+
+        .neubrutalism.bg-purple-300 {
+            background-color: rgb(156, 103, 255);
+        }
+
+        .neubrutalism.bg-pink-300 {
+            background-color: rgb(255, 105, 180);
+        }
+
+        /* Card backgrounds */
+        .bg-yellow-300 {
+            --tw-bg-opacity: 1;
+            background-color: rgb(255 204 0 / var(--tw-bg-opacity, 1));
+        }
+    </style>
+</head>
+
+<body class="min-h-screen p-4 md:p-8">
+    <div class="max-w-4xl mx-auto space-y-6">
+        <!-- Header -->
+        <div class="neubrutalism bg-yellow-300 p-6 rounded-lg">
+            <h1 class="text-3xl font-bold text-white">Daily Expense Manager</h1>
+            <p class="text-lg text-white">Track your daily expenses efficiently!</p>
+        </div>
+
+        <!-- Add Expense Form -->
+        <div class="neubrutalism bg-white p-6 rounded-lg">
+            <h2 class="text-xl font-bold mb-4 text-black">Add New Expense</h2>
+            <form id="expenseForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input type="text" id="description" placeholder="Expense Description"
+                        class="neubrutalism p-2 rounded" required="" />
+                    <input type="number" id="amount" placeholder="Amount" class="neubrutalism p-2 rounded"
+                        required="" />
+                    <input type="datetime-local" id="date" class="neubrutalism p-2 rounded" required="" />
+                    <select id="category" class="neubrutalism p-2 rounded" required="" />
+                    <option value="">Select Type</option>
+                    <option value="CR">CR</option>
+                    <option value="DR">DR</option>
+                    </select>
+                </div>
+                <button type="submit"
+                    class="neubrutalism bg-green-400 px-6 py-2 rounded w-full md:w-auto text-white">Add Expense</button>
+            </form>
+        </div>
+
+        <!-- Summary -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="neubrutalism bg-blue-300 p-6 rounded-lg">
+                <h3 class="font-bold">Today's Total</h3>
+                <p id="todayTotal" class="text-2xl font-bold">₹0.00</p>
+            </div>
+            <div class="neubrutalism bg-purple-300 p-6 rounded-lg">
+                <h3 class="font-bold">This Month's Total</h3>
+                <p id="monthTotal" class="text-2xl font-bold">₹0.00</p>
+            </div>
+            <div class="neubrutalism bg-pink-300 p-6 rounded-lg">
+                <h3 class="font-bold">All Time Total</h3>
+                <p id="allTimeTotal" class="text-2xl font-bold">₹0.00</p>
+            </div>
+        </div>
+
+        <!-- Monthly Breakdown -->
+        <div class="neubrutalism bg-white p-6 rounded-lg">
+            <h2 class="text-xl font-bold mb-4 text-black">Monthly Breakdown</h2>
+            <div class="overflow-x-auto">
+                <div id="monthlyChart" class="chart-container"></div>
+            </div>
+        </div>
+
+        <!-- Recent Expenses -->
+        <div class="neubrutalism bg-white p-6 rounded-lg">
+            <h2 class="text-xl font-bold mb-4 text-black">Recent Expenses</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b-2 border-black text-black">
+                            <th class="p-2 text-left">Date</th>
+                            <th class="p-2 text-left">Description</th>
+                            <th class="p-2 text-left">Category</th>
+                            <th class="p-2 text-left">Amount</th>
+                            <th class="p-2 text-left">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expensesList"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    (function () {
+
+        function getCookie(cname) {
+            let name = cname + "=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+        // get token 
+        const token = getCookie('token');
+        if(!token)
+        {
+            location.href="/login"
+        }
+    })()
+</script>
+
+</html>
