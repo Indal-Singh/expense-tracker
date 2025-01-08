@@ -3,9 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expanses Traker</title>
+    <title>Expense Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for Neo Brutalism with Red theme */
+        body {
+            background-color: #111!important;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s ease;
+        }
+
+        .brutalism {
+            border: 3px solid #ff1744;
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.2), -8px -8px 0 rgba(255, 255, 255, 0.4);
+            padding: 2rem;
+            transition: all 0.3s ease-in-out;
+            text-align: center;
+            margin-top: 5rem;
+            background-color: #ffffff;
+        }
+
+        .brutalism:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 12px 12px 0 rgba(0, 0, 0, 0.3), -12px -12px 0 rgba(255, 255, 255, 0.5);
+        }
+
+        .brutalism h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ff1744;
+        }
+
+        .brutalism p {
+            font-size: 1.2rem;
+            margin: 1.5rem 0;
+            color: #555;
+        }
+
+        .brutalism .btn {
+            background-color: #ff1744;
+            color: white;
+            font-weight: bold;
+            border: 2px solid #ff1744;
+            padding: 1rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            text-transform: uppercase;
+            width: 100%;
+            max-width: 250px;
+            margin-top: 2rem;
+            transition: 0.3s;
+        }
+
+        .brutalism .btn:hover {
+            background-color: #8e0000;
+            border-color: #8e0000;
+        }
+
+        .content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            padding: 0 2rem;
+            background-color: #f4f4f4;
+            transition: background-color 0.3s ease;
+        }
+
+        .content.dark {
+            background-color: #2c2c2c;
+        }
+
+        .link {
+            color: #ff1744;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .link:hover {
+            color: #8e0000;
+        }
+
+        .feature-card {
+            border: 2px solid #ff1744;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.2), -8px -8px 0 rgba(255, 255, 255, 0.4);
+            background-color: #fff;
+            margin-bottom: 2rem;
+            transition: 0.3s;
+            text-align: center;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .feature-card:hover {
+            box-shadow: 12px 12px 0 rgba(0, 0, 0, 0.3), -12px -12px 0 rgba(255, 255, 255, 0.5);
+            transform: translate(-3px, -3px);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            color: #ff1744;
+            font-weight: bold;
+        }
+
+        .feature-card p {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .feature-card i {
+            font-size: 3rem;
+            color: #ff1744;
+            margin-bottom: 1rem;
+        }
+    </style>
 </head>
-<body>
-    <button>LOGIN</button>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
+    <div class="content dark:bg-gray-900">
+        <!-- Hero Section -->
+        <div class="brutalism">
+            <h1>Track Your Expenses Effortlessly</h1>
+            <p>Stay on top of your financial goals with our simple and intuitive expense tracker.</p>
+            <a href="login" class="btn">Get Started</a>
+        </div>
+
+        <!-- Features Section -->
+        <div class="flex justify-around flex-wrap mt-10">
+            <!-- Feature 1 -->
+            <div class="feature-card">
+                <i class="fas fa-chart-pie"></i>
+                <h3>Track Your Spending</h3>
+                <p>Monitor and categorize your expenses in a few simple steps.</p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="feature-card">
+                <i class="fas fa-sync-alt"></i>
+                <h3>Sync Across Devices</h3>
+                <p>Keep your expenses updated across all your devices in real-time.</p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="feature-card">
+                <i class="fas fa-dollar-sign"></i>
+                <h3>Set Budgets</h3>
+                <p>Set monthly budgets and track your progress easily.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FontAwesome Icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
 </body>
 </html>
