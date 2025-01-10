@@ -135,9 +135,8 @@
         }
 
 
-        table
-        {
-            color:#121212;
+        table {
+            color: #121212;
         }
     </style>
 </head>
@@ -173,20 +172,46 @@
         </div>
 
         <!-- Summary -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="neubrutalism bg-blue-300 p-6 rounded-lg">
-                <h3 class="font-bold">Today's Total</h3>
-                <p id="todayTotal" class="text-2xl font-bold">₹0.00</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Debit Section (Left side) -->
+            <div class="space-y-4">
+                <!-- Debit Section Heading -->
+                <h2 class="text-3xl font-bold text-left text-blue-700">Debit Totals</h2>
+
+                <div class="neubrutalism bg-blue-300 p-6 rounded-lg">
+                    <h3 class="font-bold">Today's Debit Total</h3>
+                    <p id="todayDebitTotal" class="text-2xl font-bold">₹0.00</p>
+                </div>
+                <div class="neubrutalism bg-purple-300 p-6 rounded-lg">
+                    <h3 class="font-bold">This Month's Debit Total</h3>
+                    <p id="monthDebitTotal" class="text-2xl font-bold">₹0.00</p>
+                </div>
+                <div class="neubrutalism bg-pink-300 p-6 rounded-lg">
+                    <h3 class="font-bold">All Time Debit Total</h3>
+                    <p id="allTimeDebitTotal" class="text-2xl font-bold">₹0.00</p>
+                </div>
             </div>
-            <div class="neubrutalism bg-purple-300 p-6 rounded-lg">
-                <h3 class="font-bold">This Month's Total</h3>
-                <p id="monthTotal" class="text-2xl font-bold">₹0.00</p>
-            </div>
-            <div class="neubrutalism bg-pink-300 p-6 rounded-lg">
-                <h3 class="font-bold">All Time Total</h3>
-                <p id="allTimeTotal" class="text-2xl font-bold">₹0.00</p>
+
+            <!-- Credit Section (Right side) -->
+            <div class="space-y-4">
+                <!-- Credit Section Heading -->
+                <h2 class="text-3xl font-bold text-left text-green-700">Credit Totals</h2>
+
+                <div class="neubrutalism bg-green-300 p-6 rounded-lg">
+                    <h3 class="font-bold">Today's Credit Total</h3>
+                    <p id="todayCreditTotal" class="text-2xl font-bold">₹0.00</p>
+                </div>
+                <div class="neubrutalism bg-yellow-300 p-6 rounded-lg">
+                    <h3 class="font-bold">This Month's Credit Total</h3>
+                    <p id="monthCreditTotal" class="text-2xl font-bold">₹0.00</p>
+                </div>
+                <div class="neubrutalism bg-red-300 p-6 rounded-lg">
+                    <h3 class="font-bold">All Time Credit Total</h3>
+                    <p id="allTimeCreditTotal" class="text-2xl font-bold">₹0.00</p>
+                </div>
             </div>
         </div>
+
 
         <!-- Monthly Breakdown -->
         <!-- <div class="neubrutalism bg-white p-6 rounded-lg">
@@ -277,9 +302,13 @@
             return res.json();
         }).then((data) => {
             if (data.success) {
-                select('#todayTotal').innerText = `₹${data.data?.today_expense.toFixed(2)}`
-                select('#monthTotal').innerText = `₹${data.data?.monthly_expense.toFixed(2)}`
-                select('#allTimeTotal').innerText = `₹${data.data?.all_time_expense.toFixed(2)}`
+                select('#todayDebitTotal').innerText = `₹${data.data?.today_debit_expense.toFixed(2)}`;
+                select('#monthDebitTotal').innerText = `₹${data.data?.monthly_debit_expense.toFixed(2)}`;
+                select('#allTimeDebitTotal').innerText = `₹${data.data?.all_time_debit_expense.toFixed(2)}`;
+
+                select('#todayCreditTotal').innerText = `₹${data.data?.today_credit_expense.toFixed(2)}`;
+                select('#monthCreditTotal').innerText = `₹${data.data?.monthly_credit_expense.toFixed(2)}`;
+                select('#allTimeCreditTotal').innerText = `₹${data.data?.all_time_credit_expense.toFixed(2)}`;
             }
         }).catch((error) => console.log(error))
 
@@ -293,7 +322,7 @@
             return res.json();
         }).then((data) => {
             if (data.success) {
-                let expensesList = '';  
+                let expensesList = '';
                 expensesList = data.data.map((val) => {
                     return `<tr>
                 <td>
@@ -303,7 +332,7 @@
                     <span>${val.description}</span>
                 </td>
                 <td>
-                    <span ${val.type=="DR"?'style="color:red"':'style="color:green"'}>${val.type}</span>
+                    <span ${val.type == "DR" ? 'style="color:red"' : 'style="color:green"'}>${val.type}</span>
                 </td>
                 <td>
                     <span>₹${val.amount.toFixed(2)}</span>

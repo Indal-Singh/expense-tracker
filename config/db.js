@@ -82,9 +82,13 @@ const getExpensesByUser = (userId, callback) => {
 
 const getTodayMonthlyExpense = (userId, callback) => {
     db.get(`SELECT 
-        SUM(CASE WHEN DATE(date) = DATE('now') THEN amount ELSE 0 END) AS today_expense,
-        SUM(CASE WHEN strftime('%Y-%m', date) = strftime('%Y-%m', 'now') THEN amount ELSE 0 END) AS monthly_expense,
-        SUM(amount) AS all_time_expense
+        SUM(CASE WHEN DATE(date) = DATE('now') AND type = 'DR' THEN amount ELSE 0 END) AS today_debit_expense,
+        SUM(CASE WHEN strftime('%Y-%m', date) = strftime('%Y-%m', 'now') AND type = 'DR' THEN amount ELSE 0 END) AS monthly_debit_expense,
+        SUM(CASE WHEN type = 'DR' THEN amount ELSE 0 END) AS all_time_debit_expense,
+
+        SUM(CASE WHEN DATE(date) = DATE('now') AND type = 'CR' THEN amount ELSE 0 END) AS today_credit_expense,
+        SUM(CASE WHEN strftime('%Y-%m', date) = strftime('%Y-%m', 'now') AND type = 'CR' THEN amount ELSE 0 END) AS monthly_credit_expense,
+        SUM(CASE WHEN type = 'CR' THEN amount ELSE 0 END) AS all_time_credit_expense
     FROM expenses
     WHERE user_id = ?`, [userId], (err, row) => {
         if (err) {
@@ -95,15 +99,21 @@ const getTodayMonthlyExpense = (userId, callback) => {
         
         if (!row) {
             callback(null, {
-                today_expense: 0,
-                monthly_expense: 0,
-                all_time_expense: 0
+                today_debit_expense: 0,
+                monthly_debit_expense: 0,
+                all_time_debit_expense: 0,
+                today_credit_expense: 0,
+                monthly_credit_expense: 0,
+                all_time_credit_expense: 0
             });
         } else {
             callback(null, {
-                today_expense: row.today_expense || 0,
-                monthly_expense: row.monthly_expense || 0,
-                all_time_expense: row.all_time_expense || 0
+                today_debit_expense: row.today_debit_expense || 0,
+                monthly_debit_expense: row.monthly_debit_expense || 0,
+                all_time_debit_expense: row.all_time_debit_expense || 0,
+                today_credit_expense: row.today_credit_expense || 0,
+                monthly_credit_expense: row.monthly_credit_expense || 0,
+                all_time_credit_expense: row.all_time_credit_expense || 0
             });
         }
     });
