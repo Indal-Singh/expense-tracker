@@ -67,13 +67,88 @@ const findUserByUsername = (email, callback) => {
     db.get('SELECT * FROM users WHERE email = ?', [email], callback);
 };
 
-const createExpense = (userId, amount, description, type, callback) => {
-    db.run('INSERT INTO expenses (user_id, amount, description, type) VALUES (?, ?, ?, ?)',
-        [userId, amount, description, type], callback);
+const findUserById = (id,callback) =>{
+    db.get('SELECT * FROM users WHERE id = ?',[id],callback);
+}
+
+const createExpense = (userId, amount, description, type, datetime, callback) => {
+    db.run('INSERT INTO expenses (user_id, amount, description, type,date) VALUES (?, ?, ?, ?, ?)',
+        [userId, amount, description, type, datetime], callback);
 };
 
 const getExpensesByUser = (userId, callback) => {
     db.all('SELECT * FROM expenses WHERE user_id = ?', [userId], callback);
 };
 
-module.exports = {connectDB, createTables, createUser,findUserByUsername,createExpense,getExpensesByUser };
+const getTodayMonthlyExpense = (userId, callback) => {
+    db.get(`SELECT 
+        SUM(CASE WHEN DATE(date) = DATE('now') THEN amount ELSE 0 END) AS today_expense,
+        SUM(CASE WHEN strftime('%Y-%m', date) = strftime('%Y-%m', 'now') THEN amount ELSE 0 END) AS monthly_expense,
+        SUM(amount) AS all_time_expense
+    FROM expenses
+    WHERE user_id = ?`, [userId], (err, row) => {
+        if (err) {
+            console.error("Error running query:", err);
+            callback(err, null);
+            return;
+        }
+        
+        if (!row) {
+            callback(null, {
+                today_expense: 0,
+                monthly_expense: 0,
+                all_time_expense: 0
+            });
+        } else {
+            callback(null, {
+                today_expense: row.today_expense || 0,
+                monthly_expense: row.monthly_expense || 0,
+                all_time_expense: row.all_time_expense || 0
+            });
+        }
+    });
+};
+
+const getRecentExspensesByUser = (userId, callback) => {
+    db.all(`SELECT * FROM expenses
+            WHERE user_id = ?
+            ORDER BY date DESC
+            LIMIT 30`, [userId], (err, rows) => {
+        if (err) {
+            console.error("Error running query:", err);
+            callback(err, null);
+            return;
+        }
+        
+        if (!rows || rows.length === 0) {
+            callback(null, []);
+        } else {
+            callback(null, rows);
+        }
+    });
+};
+
+
+const deleteExpenseRecord = (userId,expenseId,callback) =>{
+    db.run("DELETE FROM expenses WHERE user_id=? AND id=?",[userId,expenseId],(err,row) =>{
+        if (err) {
+            return callback(err); 
+        }
+        callback(null, this.changes); // sending deleted id
+    })
+
+}
+
+
+module.exports = {
+connectDB, 
+createTables, 
+createUser,
+findUserByUsername,
+createExpense,
+getExpensesByUser,
+findUserById,
+getTodayMonthlyExpense,
+getRecentExspensesByUser,
+deleteExpenseRecord
+};

@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daily Expenses</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Soft Dark Theme */
@@ -107,6 +108,37 @@
             --tw-bg-opacity: 1;
             background-color: rgb(255 204 0 / var(--tw-bg-opacity, 1));
         }
+
+        .table-auto th,
+        .table-auto td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        .table-auto {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .delete-btn {
+            color: red;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .delete-btn:hover {
+            color: darkred;
+        }
+
+        .table-auto tbody tr:hover {
+            background-color: #f2f2f2;
+        }
+
+
+        table
+        {
+            color:#121212;
+        }
     </style>
 </head>
 
@@ -123,18 +155,19 @@
             <h2 class="text-xl font-bold mb-4 text-black">Add New Expense</h2>
             <form id="expenseForm" class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input type="text" id="description" placeholder="Expense Description"
+                    <input type="text" id="description" name="description" placeholder="Expense Description"
                         class="neubrutalism p-2 rounded" required="" />
-                    <input type="number" id="amount" placeholder="Amount" class="neubrutalism p-2 rounded"
+                    <input type="number" name="amount" id="amount" placeholder="Amount" class="neubrutalism p-2 rounded"
                         required="" />
-                    <input type="datetime-local" id="date" class="neubrutalism p-2 rounded" required="" />
-                    <select id="category" class="neubrutalism p-2 rounded" required="" />
+                    <input type="datetime-local" name="datetime" id="date" class="neubrutalism p-2 rounded"
+                        required="" />
+                    <select id="type" name="type" class="neubrutalism p-2 rounded" required="" />
                     <option value="">Select Type</option>
                     <option value="CR">CR</option>
                     <option value="DR">DR</option>
                     </select>
                 </div>
-                <button type="submit"
+                <button type="submit" id="addexpenesBtn"
                     class="neubrutalism bg-green-400 px-6 py-2 rounded w-full md:w-auto text-white">Add Expense</button>
             </form>
         </div>
@@ -156,23 +189,23 @@
         </div>
 
         <!-- Monthly Breakdown -->
-        <div class="neubrutalism bg-white p-6 rounded-lg">
+        <!-- <div class="neubrutalism bg-white p-6 rounded-lg">
             <h2 class="text-xl font-bold mb-4 text-black">Monthly Breakdown</h2>
             <div class="overflow-x-auto">
                 <div id="monthlyChart" class="chart-container"></div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Recent Expenses -->
         <div class="neubrutalism bg-white p-6 rounded-lg">
             <h2 class="text-xl font-bold mb-4 text-black">Recent Expenses</h2>
             <div class="overflow-x-auto">
-                <table class="w-full">
+                <table class="w-full table-auto">
                     <thead>
                         <tr class="border-b-2 border-black text-black">
                             <th class="p-2 text-left">Date</th>
                             <th class="p-2 text-left">Description</th>
-                            <th class="p-2 text-left">Category</th>
+                            <th class="p-2 text-left">Type</th>
                             <th class="p-2 text-left">Amount</th>
                             <th class="p-2 text-left">Action</th>
                         </tr>
@@ -183,31 +216,141 @@
         </div>
     </div>
 </body>
+<script src="/js/main.js"></script>
 <script>
     (function () {
-
-        function getCookie(cname) {
-            let name = cname + "=";
-            let decodedCookie = decodeURIComponent(document.cookie);
-            let ca = decodedCookie.split(';');
-            for (let i = 0; i < ca.length; i++) {
-                let c = ca[i];
-                while (c.charAt(0) == ' ') {
-                    c = c.substring(1);
-                }
-                if (c.indexOf(name) == 0) {
-                    return c.substring(name.length, c.length);
-                }
-            }
-            return "";
-        }
         // get token 
         const token = getCookie('token');
-        if(!token)
-        {
-            location.href="/login"
+        if (!token) {
+            location.href = "/login"
+        }
+        else {
+
         }
     })()
+
+    // setting currect date 
+    select('#date').value = new Date().toISOString().slice(0, 16);
+    // adding expenses
+    select('#expenseForm').addEventListener("submit", (e) => {
+        e.preventDefault();
+        select('#addexpenesBtn').innerText = "Adding.."
+        let formData = new FormData(select('#expenseForm'));
+        let formObject = {};
+        formData.forEach((value, key) => {
+            formObject[key] = value;
+        });
+        fetch('/api/expenses/create', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formObject),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                select('#addexpenesBtn').innerText = "Add Expense";
+                if (data.success) {
+                    alert(data.message);
+                    select('#expenseForm').reset();
+                    updateUiValues();
+                } else {
+                    alert(data.message);
+                    updateUiValues();
+                }
+            })
+            .catch((error) => {
+                select('#addexpenesBtn').innerText = "Add Expense";
+                console.error('Error:', error);
+                updateUiValues();
+            });
+    })
+
+    const updateUiValues = () => {
+        // geting today monthly and total from api 
+        fetch('/api/expenses/get-expenses-by-today-monthly', {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        }).then((res) => {
+            return res.json();
+        }).then((data) => {
+            if (data.success) {
+                select('#todayTotal').innerText = `₹${data.data?.today_expense.toFixed(2)}`
+                select('#monthTotal').innerText = `₹${data.data?.monthly_expense.toFixed(2)}`
+                select('#allTimeTotal').innerText = `₹${data.data?.all_time_expense.toFixed(2)}`
+            }
+        }).catch((error) => console.log(error))
+
+        // upading recent expenses 
+        fetch('/api/expenses/get-expenses-by-user', {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        }).then((res) => {
+            return res.json();
+        }).then((data) => {
+            if (data.success) {
+                let expensesList = '';  
+                expensesList = data.data.map((val) => {
+                    return `<tr>
+                <td>
+                    <span>${formatDate(val.date)}</span>
+                </td>
+                <td>
+                    <span>${val.description}</span>
+                </td>
+                <td>
+                    <span ${val.type=="DR"?'style="color:red"':'style="color:green"'}>${val.type}</span>
+                </td>
+                <td>
+                    <span>₹${val.amount.toFixed(2)}</span>
+                </td>
+                <td class="delete-btn-container">
+                    <span class="delete-btn" data-id="${val.id}"> <i class="fa fa-trash" aria-hidden="true"></i></span>
+                </td>
+            </tr>`;
+                }).join('');
+
+
+                select('#expensesList').innerHTML = expensesList;
+
+                // Add event listeners to delete buttons
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const expenseId = this.getAttribute('data-id');
+                        deleteExpense(expenseId);
+                    });
+                });
+            }
+        }).catch((error) => console.log(error));
+
+
+    }
+
+
+    // Delete expense function
+    function deleteExpense(expenseId) {
+        fetch(`/api/expenses/delete-expense/${expenseId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remove the row from the table
+                    select(`.delete-btn[data-id="${expenseId}"]`).closest('tr').remove();
+                } else {
+                    alert('Failed to delete expense');
+                }
+            }).catch(error => console.log('Error:', error));
+    }
+
+
+    updateUiValues();
 </script>
 
 </html>

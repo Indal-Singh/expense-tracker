@@ -90,9 +90,8 @@
 
         <p class="text-white text-center mt-4 text-lg">Don't have an account? <a href="/register" class="link">Register</a></p>
     </div>
-
+    <script src="/js/main.js"></script>
     <script>
-        const select = (element) => document.querySelector(element);
 
         select('#loginForm')?.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -113,9 +112,9 @@
             .then((response) => response.json())
             .then((data) => {
                 if(data.success) {
-                    alert(data.message);
+                    // alert(data.message);
                     select('#loginForm').reset();
-                    location.href="/";
+                    location.href="/dashboard";
                 } else {
                     alert(data.message);
                 }
