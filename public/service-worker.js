@@ -1,8 +1,5 @@
-const CACHE_NAME = 'expense-tracker-cache-v2';
+const CACHE_NAME = 'expense-tracker-cache-v3';
 const CACHE_URLS = [
-  '/',
-  '/login',
-  '/register',
   '/images/icons/android-chrome-192x192.png',
   '/images/icons/android-chrome-512x512.png',
 //   '/js/main.js',

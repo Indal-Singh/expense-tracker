@@ -117,11 +117,6 @@
                 .then((data) => {
                     if (data.success) {
                         // alert(data.message);
-                        if ('serviceWorker' in navigator) {
-                            navigator.serviceWorker.ready.then(function (registration) {
-                                registration.update(); // Force service worker to update and clear any unnecessary caches
-                            });
-                        }
                         select('#loginForm').reset();
                         location.href = "/dashboard";
                     } else {
