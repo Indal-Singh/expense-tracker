@@ -1,10 +1,12 @@
 const CACHE_NAME = 'expense-tracker-cache-v1';
 const CACHE_URLS = [
   '/',
+  '/dashboard', // Cache authenticated pages
   '/login',
   '/register',
   '/images/icons/android-chrome-192x192.png',
   '/images/icons/android-chrome-512x512.png',
+  '/js/main.js',
   // Add other assets (CSS, JS files, etc.) that you want to cache
 ];
 
@@ -36,6 +38,7 @@ self.addEventListener('activate', (event) => {
 
 // Fetch event: Serve cached content or fetch from the network
 self.addEventListener('fetch', (event) => {
+    // Match against cache first, and if not available, fetch from network
     event.respondWith(
       caches.match(event.request).then((cachedResponse) => {
         // Return cached response if available
@@ -43,13 +46,13 @@ self.addEventListener('fetch', (event) => {
           return cachedResponse;
         }
   
-        // Otherwise, fetch from the network
+        // For dynamic pages (e.g., dashboard, after login), fetch from network first
         return fetch(event.request).then((networkResponse) => {
-          // If the response is valid, clone it before caching
+          // If it's a valid response, clone and cache it
           if (networkResponse && networkResponse.status === 200 && networkResponse.type !== 'opaque') {
-            const clonedResponse = networkResponse.clone(); // Clone response here
+            const clonedResponse = networkResponse.clone();
   
-            // Open the cache and put the cloned response
+            // Open the cache and store the cloned response
             caches.open(CACHE_NAME).then((cache) => {
               cache.put(event.request, clonedResponse);
             });

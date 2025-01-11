@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -70,6 +71,7 @@
         }
     </style>
 </head>
+
 <body class="flex justify-center items-center min-h-screen">
     <div class="brutalism max-w-md w-full">
         <h2 class="text-4xl text-white font-bold text-center mb-6">Login</h2>
@@ -89,14 +91,15 @@
             </div>
         </form>
 
-        <p class="text-white text-center mt-4 text-lg">Don't have an account? <a href="/register" class="link">Register</a></p>
+        <p class="text-white text-center mt-4 text-lg">Don't have an account? <a href="/register"
+                class="link">Register</a></p>
     </div>
     <script src="/js/main.js"></script>
     <script>
 
         select('#loginForm')?.addEventListener('submit', (e) => {
             e.preventDefault();
-            
+
             let formData = new FormData(select('#loginForm'));
             let formObject = {};
             formData.forEach((value, key) => {
@@ -110,20 +113,26 @@
                 },
                 body: JSON.stringify(formObject),
             })
-            .then((response) => response.json())
-            .then((data) => {
-                if(data.success) {
-                    // alert(data.message);
-                    select('#loginForm').reset();
-                    location.href="/dashboard";
-                } else {
-                    alert(data.message);
-                }
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        // alert(data.message);
+                        if ('serviceWorker' in navigator) {
+                            navigator.serviceWorker.ready.then(function (registration) {
+                                registration.update(); // Force service worker to update and clear any unnecessary caches
+                            });
+                        }
+                        select('#loginForm').reset();
+                        location.href = "/dashboard";
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
         });
     </script>
 </body>
+
 </html>
