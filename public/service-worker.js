@@ -1,4 +1,4 @@
-const CACHE_NAME = 'expense-tracker-cache-v5';
+const CACHE_NAME = 'expense-tracker-cache-v6';
 const CACHE_URLS = [
   '/images/icons/android-chrome-192x192.png',
   '/images/icons/android-chrome-512x512.png',
@@ -34,12 +34,19 @@ self.addEventListener('activate', (event) => {
 
 // Fetch event: Serve cached content or fetch from the network
 self.addEventListener('fetch', (event) => {
-    // Check if the request method is GET
+    // Exclude caching for any requests starting with /api
+    if (event.request.url.includes('/api')) {
+      // For /api requests, always fetch from the network (don't cache)
+      event.respondWith(fetch(event.request));
+      return;
+    }
+  
+    // Otherwise, proceed with caching GET requests
     if (event.request.method === 'GET') {
       event.respondWith(
         caches.match(event.request).then((cachedResponse) => {
           if (cachedResponse) {
-            return cachedResponse; // Return cached response if available
+            return cachedResponse; // Serve from cache if available
           }
   
           // Fetch from the network and cache the response
@@ -59,4 +66,4 @@ self.addEventListener('fetch', (event) => {
       // For POST or other methods, just fetch from the network without caching
       event.respondWith(fetch(event.request));
     }
-  });
+  });  
