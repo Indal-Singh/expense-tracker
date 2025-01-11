@@ -30,7 +30,6 @@ const login = (req, res) => {
 
 const verifyUser = (req, res) => {
     let userId = req.user.id;
-    console.log(userId)
     // chcking bdatabase in user 
     User.findUserById(userId, (err, user) => {
         if (err) {
