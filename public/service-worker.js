@@ -1,7 +1,6 @@
 const CACHE_NAME = 'expense-tracker-cache-v1';
 const CACHE_URLS = [
   '/',
-  '/dashboard', // Cache authenticated pages
   '/login',
   '/register',
   '/images/icons/android-chrome-192x192.png',
