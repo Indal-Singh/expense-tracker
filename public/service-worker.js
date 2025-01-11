@@ -1,4 +1,4 @@
-const CACHE_NAME = 'expense-tracker-cache-v4';
+const CACHE_NAME = 'expense-tracker-cache-v5';
 const CACHE_URLS = [
   '/images/icons/android-chrome-192x192.png',
   '/images/icons/android-chrome-512x512.png',
@@ -34,31 +34,29 @@ self.addEventListener('activate', (event) => {
 
 // Fetch event: Serve cached content or fetch from the network
 self.addEventListener('fetch', (event) => {
-    // Match against cache first, and if not available, fetch from network
-    event.respondWith(
-      caches.match(event.request).then((cachedResponse) => {
-        // Return cached response if available
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-  
-        // For dynamic pages (e.g., dashboard, after login), fetch from network first
-        return fetch(event.request).then((networkResponse) => {
-          // If it's a valid response, clone and cache it
-          if (networkResponse && networkResponse.status === 200 && networkResponse.type !== 'opaque') {
-            const clonedResponse = networkResponse.clone();
-  
-            // Open the cache and store the cloned response
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, clonedResponse);
-            });
+    // Check if the request method is GET
+    if (event.request.method === 'GET') {
+      event.respondWith(
+        caches.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) {
+            return cachedResponse; // Return cached response if available
           }
   
-          // Return the network response to the browser
-          return networkResponse;
-        });
-      })
-    );
+          // Fetch from the network and cache the response
+          return fetch(event.request).then((networkResponse) => {
+            // If the network response is valid, clone and cache it
+            if (networkResponse && networkResponse.status === 200 && networkResponse.type !== 'opaque') {
+              const clonedResponse = networkResponse.clone();
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(event.request, clonedResponse); // Cache the response
+              });
+            }
+            return networkResponse; // Return the network response
+          });
+        })
+      );
+    } else {
+      // For POST or other methods, just fetch from the network without caching
+      event.respondWith(fetch(event.request));
+    }
   });
-  
-  
