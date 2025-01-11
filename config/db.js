@@ -18,14 +18,16 @@ const checkAndCreateFolder = async (folderPath) => {
 };
 
 
-const connectDB = () => {
+const connectDB = async () => {
     let dbFolder = path.join(__dirname, '../db-file');
-    checkAndCreateFolder(dbFolder)
-    return db = new sqlite3.Database(dbFolder+'/expense-tracker.db', (err) => {
+    await checkAndCreateFolder(dbFolder)
+    const dbPath = path.join(dbFolder, 'expense-tracker.db');
+    return db = new sqlite3.Database(dbPath, (err) => {
         if (err) {
             console.error('Error opening database', err);
         } else {
             console.log('Connected to SQLite database');
+            createTables();
         }
     });
 };
@@ -59,7 +61,6 @@ const createTables = () => {
 
 const createUser = (name, email, password, callback) => {
     const hashedPassword = bcrypt.hashSync(password, 10);
-    console.log("Indal0",db);
     db.run('INSERT INTO users (name,email, password) VALUES (?, ?, ?)', [name,email, hashedPassword], callback);
 };
 

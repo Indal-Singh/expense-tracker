@@ -4,14 +4,13 @@ const authRoutes = require('./routes/authRoutes');
 const expenseRoutes = require('./routes/expenseRoutes');
 const webRoutes = require('./routes/web');
 const path = require('path');
-const { connectDB,createTables } = require('./config/db');
+const { connectDB } = require('./config/db');
 const cookieParser = require('cookie-parser');
 
 dotenv.config();
 const app = express();
 
 connectDB();
-createTables();
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname,'public')))
 app.use(express.urlencoded({ extended: false }));
