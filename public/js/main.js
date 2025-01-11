@@ -57,3 +57,19 @@ function formatDate(dateString) {
     // Format the date using the options
     return date.toLocaleString('en-US', options);
 }
+
+function getFormattedDateTime() {
+    const now = new Date();
+  
+    // Get local date components
+    const year = now.getFullYear();
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');  // Month is 0-based, so we add 1
+    const day = now.getDate().toString().padStart(2, '0');
+  
+    // Get local time components
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+  
+    // Format as 'YYYY-MM-DDTHH:mm'
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  }
