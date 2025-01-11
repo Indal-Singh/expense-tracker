@@ -9,7 +9,7 @@ const checkAndCreateFolder = async (folderPath) => {
     try {
         // Check if the folder exists
         await fs.access(folderPath);
-        console.log('Folder already exists');
+        // console.log('Folder already exists');
     } catch (err) {
         // If the folder doesn't exist, create it
         await fs.mkdir(folderPath, { recursive: true });
