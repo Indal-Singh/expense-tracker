@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +11,7 @@
     <style>
         /* Custom styles for Neo Brutalism with Red theme */
         body {
-            background-color: #111!important;
+            background-color: #111 !important;
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
@@ -125,6 +126,7 @@
         }
     </style>
 </head>
+
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
     <div class="content dark:bg-gray-900">
         <!-- Hero Section -->
@@ -161,5 +163,17 @@
 
     <!-- FontAwesome Icons -->
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+        const checkUserLogin = async () => {
+            const isLoggedIn = await verifyLoginUser();
+            console.log(isLoggedIn);
+            if (isLoggedIn) {
+                location.href = "/dashboard";  
+            }
+        }
+        checkUserLogin();
+    </script>
 </body>
+
 </html>

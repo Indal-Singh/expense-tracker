@@ -6,7 +6,7 @@ const CACHE_URLS = [
   '/register',
   '/images/icons/android-chrome-192x192.png',
   '/images/icons/android-chrome-512x512.png',
-  '/js/main.js',
+//   '/js/main.js',
   // Add other assets (CSS, JS files, etc.) that you want to cache
 ];
 

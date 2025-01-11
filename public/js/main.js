@@ -1,7 +1,7 @@
 const select = (element) => document.querySelector(element);
 const verifyLoginUser = async () => {
     const token = getCookie('token');
-    
+    console.log(token);
     try {
         const res = await fetch('/api/auth/verify', {
             method: "GET",
@@ -14,7 +14,6 @@ const verifyLoginUser = async () => {
         const data = await res.json();
         
         if (!data?.success) {
-            
             return false;
         } else {
            
